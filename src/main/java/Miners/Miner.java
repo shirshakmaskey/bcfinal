@@ -91,6 +91,10 @@ public class Miner extends Thread {
         for (int i = 0; i < consensusList.size(); i++) {
             consensusList.removeAll(consensusList);
         }
+        for (int i = 0; i < validation.size(); i++) {
+            validation.removeAll(validation);
+        }
+        boi = null;
         minerNum = 0;
         final_nounce = "";
     }
