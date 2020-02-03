@@ -1,18 +1,16 @@
 package Miners;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import BC.Block;
 import BC.Encryption;
-import BC.Transaction;
 import Vanet.AccidentVerify;
 
 public class Miner extends Thread {
     public static boolean solutionClaimed = false;
     public static int claimerID = -1;
     public static int candidate = Integer.MIN_VALUE;
-    public static ArrayList<Boolean> consensusList = new ArrayList<Boolean>();
+    public static ArrayList<Boolean> consensusList = new ArrayList<>();
     public static ArrayList<Boolean> validation = new ArrayList<>();
     public static int minerNum = 0;
     public static String final_nounce;
@@ -47,7 +45,7 @@ public class Miner extends Thread {
         }
         result = count == amount;
 
-        return result;
+        return !result;
     }
 
     private boolean consensusAchieved()  {
@@ -56,11 +54,11 @@ public class Miner extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Integer true_count = 0;
-        Integer false_count = 0;
+        int true_count = 0;
+        int false_count = 0;
 
-        for (int i = 0; i < consensusList.size(); i++) {
-            if (consensusList.get(i) == false) {
+        for (Boolean aBoolean : consensusList) {
+            if (!aBoolean) {
                 false_count++;
             } else {
                 true_count++;
@@ -106,7 +104,7 @@ public class Miner extends Thread {
 //        while (!consensusAchieved()) {
             // for now, we will set timer to 60s
             Long start_t = System.currentTimeMillis();
-            while (!numLeading0is(difficulty, Encryption.sha256("" + nounce + prevInfo))) {
+            while (numLeading0is(difficulty, Encryption.sha256("" + nounce + prevInfo))) {
                 if(System.currentTimeMillis()-start_t > 60*1000){
                     // means that the timeout threshold is breached
                     // this means this miner is unable to mine so will have no effect on vote
@@ -114,7 +112,7 @@ public class Miner extends Thread {
                 }
                 nounce++;
                 if (nounce == Integer.MAX_VALUE
-                        && !numLeading0is(difficulty, Encryption.sha256("" + nounce + prevInfo))) {
+                        && numLeading0is(difficulty, Encryption.sha256("" + nounce + prevInfo))) {
                     prevInfo++;
                     nounce = Integer.MIN_VALUE;
                 }

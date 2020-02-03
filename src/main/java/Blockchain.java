@@ -5,9 +5,12 @@ import Utils.Utils;
 
 import java.util.ArrayList;
 public class Blockchain {
-    public static ArrayList<Block> blockchain = new ArrayList<>(); // The blockchain is implemented as an arraylist of Blocks
+    public static ArrayList<Block> blockchain = new ArrayList<>();
+    // The blockchain is implemented as an ArrayList of Blocks
+    // and the block is implemented as ArrayList of transactions.
 
     public final static int NUM_BLOCKS = 20;
+    public final static int MINER_NUM = 5;
 
 
     public static Block createGenesisBlock() {
@@ -19,47 +22,53 @@ public class Blockchain {
     }
 
     public static void printChain() {
-        for (int i = 0; i < blockchain.size(); i++) {
-            System.out.println(blockchain.get(i));
+        for (Block block : blockchain) {
+            System.out.println(block);
         }
     }
 
     public static Block simulate(Transaction t){
-        // add 20 more blocks to the chain
+        //Create next block in blockchain
         Block next = createNextBlock(blockchain.get(blockchain.size()-1), t);
         Utils.log("created block");
         return next;
-//        blockchain.add(next);
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         // dummy transactions list
         ArrayList<Transaction> tlist = new ArrayList<>();
+        //Add multiple transaction to a transaction list.
         tlist.add(new Transaction(12.0, 13.25, 100.0f, 120.0f));
         tlist.add(new Transaction(12.0, 13.25, 100.0f, 120.0f));
         tlist.add(new Transaction(12.0, 13.25, 100.0f, 120.0f));
         tlist.add(new Transaction(12.0, 13.25, 100.0f, 120.0f));
         tlist.add(new Transaction(12.0, 13.25, 100.0f, 120.0f));
-
-        blockchain.add(createGenesisBlock()); // create genesis block and add it to the chain
+        // create genesis block and add it to the chain
+        blockchain.add(createGenesisBlock());
+        //Log all events in the console for better readability
         Utils.log("Added genesis block");
+        //Loop through all transactions in the list
         for (Transaction t : tlist) {
+            //Simulate blockchain mining using a single block
             Block block = simulate(t);
-
             Utils.log("initial blockchain size " + blockchain.size());
-
+            //Create an array list of class miner objects.
             ArrayList<Miner> miners = new ArrayList<>();
             Miner.boi = block;
             Miner.reset();
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < MINER_NUM; i++) {
+                //create a new miner object from miner class
                 Miner miner = new Miner("" + i, 0L, 2);
+                //add miner to the miner array list
                 miners.add(miner);
+                //start the miner thread
                 miner.start();
             }
 
-            for (int i = 0; i < miners.size(); i++) {
+            for (Miner miner : miners) {
                 try {
-                    miners.get(i).join();
+                    //wait for all threads to be executed
+                    miner.join();
                 } catch (InterruptedException e) {
                     System.out.println("Thread interrupted.");
                 }
@@ -70,15 +79,15 @@ public class Blockchain {
                 if (validation) true_c++;
                 else false_c++;
             }
-
-            // we just go ahead with true > false for now
+            // compares the total validation count between true amd false
             if (true_c > false_c) {
                 Utils.log("True/False validation " + true_c + "/" + false_c);
                 // this means the accident is validated
                 // so we add the block
                 blockchain.add(block);
             }
-
+            //if the accident is not validated it is ignored from the blockchain
+            //finally publish the blockchain size at the end of the mining
             Utils.log("current blockchain size " + blockchain.size());
         }
     }
