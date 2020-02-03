@@ -10,6 +10,15 @@ public class Transaction {
     private Float decelaration;
 
 
+    public Transaction(){}
+
+    public Transaction(Double _long, Double _lat, Float _avgs, Float _decel){
+        this.longitute = _long;
+        this.latitute = _lat;
+        this.avgSpeed = _avgs;
+        this.decelaration = _decel;
+    }
+
     public String getHash(){
         return ""+longitute+""+latitute+""+avgSpeed+""+decelaration;
     }
