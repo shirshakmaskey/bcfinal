@@ -1,3 +1,5 @@
+package BC;
+
 import java.util.Date;
 
 public class Block {
@@ -20,7 +22,7 @@ public class Block {
     }
 
     public String toString() {
-        return ("Block #" + this.index + "\n\tmined at: " + this.timestamp + "\n\tData: " + this.data + "\n\tHash: {"
+        return ("BC.Block #" + this.index + "\n\tmined at: " + this.timestamp + "\n\tData: " + this.data + "\n\tHash: {"
                 + this.hash + "}\n");
     }
 }

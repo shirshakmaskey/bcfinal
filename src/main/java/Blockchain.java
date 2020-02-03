@@ -1,3 +1,5 @@
+import BC.Block;
+
 import java.util.ArrayList;
 public class Blockchain {
     public static ArrayList<Block> blockchain = new ArrayList<>(); // The blockchain is implemented as an arraylist of Blocks
@@ -19,6 +21,7 @@ public class Blockchain {
             System.out.println(blockchain.get(i));
         }
     }
+
     public static void main(String args[]) {
         blockchain.add(createGenesisBlock()); // create genesis block and add it to the chain
         // add 20 more blocks to the chain
