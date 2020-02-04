@@ -14,7 +14,8 @@ public class Miner extends Thread {
     public static ArrayList<Boolean> validation = new ArrayList<>();
     public static int minerNum = 0;
     public static String final_nounce;
-    public static Block boi;
+    public static Block boi,pboi;
+    public static int bsize;
 
     private int difficulty;
     private long prevInfo;
@@ -43,9 +44,9 @@ public class Miner extends Thread {
                 break;
             }
         }
-        result = count == amount;
+        result = count != amount;
 
-        return !result;
+        return result;
     }
 
     private boolean consensusAchieved()  {
@@ -86,6 +87,7 @@ public class Miner extends Thread {
         solutionClaimed = false;
         claimerID = -1;
         candidate = Integer.MIN_VALUE;
+        //clear all elements from consensus list and validation list
         for (int i = 0; i < consensusList.size(); i++) {
             consensusList.removeAll(consensusList);
         }
@@ -93,36 +95,37 @@ public class Miner extends Thread {
             validation.removeAll(validation);
         }
         boi = null;
+        pboi = null;
+        bsize = 0;
         minerNum = 0;
         final_nounce = "";
     }
 
     @Override
     public void run() {
-      System.out.println("Running miner thread: " + this.getName());
+        System.out.println("Running miner thread: " + this.getName());
         int nounce = Integer.MIN_VALUE;
-//        while (!consensusAchieved()) {
-            // for now, we will set timer to 60s
-            Long start_t = System.currentTimeMillis();
-            while (numLeading0is(difficulty, Encryption.sha256("" + nounce + prevInfo))) {
-                if(System.currentTimeMillis()-start_t > 60*1000){
-                    // means that the timeout threshold is breached
-                    // this means this miner is unable to mine so will have no effect on vote
-                    return;
-                }
-                nounce++;
-                if (nounce == Integer.MAX_VALUE
-                        && numLeading0is(difficulty, Encryption.sha256("" + nounce + prevInfo))) {
-                    prevInfo++;
-                    nounce = Integer.MIN_VALUE;
-                }
+        // for now, we will set timer to 60s
+        // if the validation is finished within 60 seconds it is displayed
+        // else it only waits upto 60 seconds and displays whatever is present as validation
+        long start_t = System.currentTimeMillis();
+        while (numLeading0is(difficulty, Encryption.sha256("" + nounce + prevInfo))) {
+            if(System.currentTimeMillis()-start_t > 60*1000){
+                // means that the timeout threshold is breached
+                // this means this miner is unable to mine so will have no effect on vote
+                return;
             }
+            nounce++;
+            if (nounce == Integer.MAX_VALUE && numLeading0is(difficulty, Encryption.sha256("" + nounce + prevInfo))) {
+                prevInfo++;
+                nounce = Integer.MIN_VALUE;
+            }
+        }
 
-            if(claimerID == -1) claimerID = index;
-            candidate = nounce;
-            validation.add(AccidentVerify.verify(Miner.boi));
-
-
+        if(claimerID == -1) claimerID = index;
+        candidate = nounce;
+        System.out.println("blockchain size at miner: "+Miner.bsize);
+        validation.add(AccidentVerify.verify(Miner.boi, Miner.pboi));
 //            if (solutionClaimed) {
 //                // if someone else claims that a solution is found, verify that
 //                if (numLeading0is(difficulty, Encryption.sha256("" + candidate + prevInfo))) {
@@ -140,7 +143,6 @@ public class Miner extends Thread {
 //                claimerID = index;
 //            }
 //        }
-
         final_nounce = "" + candidate + prevInfo;
         System.out.println("Miner" + (this.index + 1) + "(" + this.getName() + ")" + " has approved that Miner"
                 + (claimerID + 1) + " came up with the correct solution: " + "\"" + final_nounce + "\"");

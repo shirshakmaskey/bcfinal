@@ -39,10 +39,10 @@ public class Blockchain {
         ArrayList<Transaction> tlist = new ArrayList<>();
         //Add multiple transaction to a transaction list.
         tlist.add(new Transaction(12.0, 13.25, 100.0f, 120.0f));
-        tlist.add(new Transaction(12.0, 13.25, 100.0f, 120.0f));
-        tlist.add(new Transaction(12.0, 13.25, 100.0f, 120.0f));
-        tlist.add(new Transaction(12.0, 13.25, 100.0f, 120.0f));
-        tlist.add(new Transaction(12.0, 13.25, 100.0f, 120.0f));
+        tlist.add(new Transaction(22.0, 13.25, 100.0f, 120.0f));
+        tlist.add(new Transaction(32.0, 13.25, 100.0f, 120.0f));
+        tlist.add(new Transaction(42.0, 13.25, 100.0f, 120.0f));
+        tlist.add(new Transaction(52.0, 13.25, 100.0f, 120.0f));
         // create genesis block and add it to the chain
         blockchain.add(createGenesisBlock());
         //Log all events in the console for better readability
@@ -54,8 +54,13 @@ public class Blockchain {
             Utils.log("initial blockchain size " + blockchain.size());
             //Create an array list of class miner objects.
             ArrayList<Miner> miners = new ArrayList<>();
-            Miner.boi = block;
             Miner.reset();
+            Miner.bsize = blockchain.size();
+            if(Miner.bsize == 1){ Miner.boi = null; } else {Miner.boi = block;}
+            System.out.println("bc size at blockchain: "+blockchain.size());
+            Miner.pboi = blockchain.get(blockchain.size()-1);
+            System.out.println("block at blockchain "+blockchain.get(blockchain.size()-1));
+            System.out.println("block at blockchain current"+block);
             for (int i = 0; i < MINER_NUM; i++) {
                 //create a new miner object from miner class
                 Miner miner = new Miner("" + i, 0L, 2);
@@ -89,6 +94,7 @@ public class Blockchain {
             //if the accident is not validated it is ignored from the blockchain
             //finally publish the blockchain size at the end of the mining
             Utils.log("current blockchain size " + blockchain.size());
+            //printChain();
         }
     }
 

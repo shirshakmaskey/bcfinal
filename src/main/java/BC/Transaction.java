@@ -3,24 +3,35 @@ package BC;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
+
 public class Transaction {
-    private Double longitute;
-    private Double latitute;
-    private Float avgSpeed;
-    private Float decelaration;
+    protected double longitude;
+    protected double latitude;
+    protected float avgSpeed;
+    protected float deceleration;
 
 
     public Transaction(){}
 
-    public Transaction(Double _long, Double _lat, Float _avgs, Float _decel){
-        this.longitute = _long;
-        this.latitute = _lat;
+    public Transaction(double _long, double _lat, float _avgs, float _decel){
+        this.longitude = _long;
+        this.latitude = _lat;
         this.avgSpeed = _avgs;
-        this.decelaration = _decel;
+        this.deceleration = _decel;
+    }
+
+    public ArrayList<Double> getTransaction(){
+        ArrayList<Double> local = new ArrayList<>();
+        local.add(this.longitude);
+        local.add(this.latitude);
+        local.add((double)this.avgSpeed);
+        local.add((double)this.deceleration);
+        return local;
     }
 
     public String getHash(){
-        return ""+longitute+""+latitute+""+avgSpeed+""+decelaration;
+        return ""+longitude+""+latitude+""+avgSpeed+""+deceleration;
     }
 
     public String getJSON(){
