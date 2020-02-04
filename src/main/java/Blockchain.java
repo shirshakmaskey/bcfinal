@@ -10,7 +10,7 @@ public class Blockchain {
     // and the block is implemented as ArrayList of transactions.
 
     public final static int NUM_BLOCKS = 20;
-    public final static int MINER_NUM = 5;
+    public final static int MINER_NUM = 12;
 
 
     public static Block createGenesisBlock() {
@@ -38,12 +38,13 @@ public class Blockchain {
         // dummy transactions list
         ArrayList<Transaction> tlist = new ArrayList<>();
         //Add multiple transaction to a transaction list.
-        tlist.add(new Transaction(12.0, 13.25, 100.0f, 120.0f));
-        tlist.add(new Transaction(22.0, 13.25, 100.0f, 120.0f));
-        tlist.add(new Transaction(32.0, 13.25, 100.0f, 120.0f));
-        tlist.add(new Transaction(42.0, 13.25, 100.0f, 120.0f));
-        tlist.add(new Transaction(52.0, 13.25, 100.0f, 120.0f));
+        tlist.add(new Transaction(-119.827539, 39.530862, 10.0f, 20f,1));
+        tlist.add(new Transaction(-119.837539, 39.540863, 7.0f, 47f,2));
+        tlist.add(new Transaction(-119.839539, 39.550863, 10.0f, 65f,3));
+        tlist.add(new Transaction(-119.869845, 39.560253, 12.0f, 120f,4));
+        tlist.add(new Transaction(-119.861845, 39.560356, 100.0f, 108f,5));
         // create genesis block and add it to the chain
+        Utils.log("total Start time: "+System.currentTimeMillis());
         blockchain.add(createGenesisBlock());
         //Log all events in the console for better readability
         Utils.log("Added genesis block");
@@ -51,19 +52,16 @@ public class Blockchain {
         for (Transaction t : tlist) {
             //Simulate blockchain mining using a single block
             Block block = simulate(t);
-            Utils.log("initial blockchain size " + blockchain.size());
+            //Utils.log("initial blockchain size " + blockchain.size());
             //Create an array list of class miner objects.
             ArrayList<Miner> miners = new ArrayList<>();
             Miner.reset();
             Miner.bsize = blockchain.size();
-            if(Miner.bsize == 1){ Miner.boi = null; } else {Miner.boi = block;}
-            System.out.println("bc size at blockchain: "+blockchain.size());
-            Miner.pboi = blockchain.get(blockchain.size()-1);
-            System.out.println("block at blockchain "+blockchain.get(blockchain.size()-1));
-            System.out.println("block at blockchain current"+block);
+            Miner.boi = block;
+            if(Miner.bsize == 1){ Miner.pboi = null; } else {Miner.pboi = Miner.pboi = blockchain.get(1);;}
             for (int i = 0; i < MINER_NUM; i++) {
                 //create a new miner object from miner class
-                Miner miner = new Miner("" + i, 0L, 2);
+                Miner miner = new Miner("" + i, 0L, 5);
                 //add miner to the miner array list
                 miners.add(miner);
                 //start the miner thread
@@ -94,8 +92,9 @@ public class Blockchain {
             //if the accident is not validated it is ignored from the blockchain
             //finally publish the blockchain size at the end of the mining
             Utils.log("current blockchain size " + blockchain.size());
-            //printChain();
         }
+        Utils.log("Total end time: "+System.currentTimeMillis());
+        printChain();
     }
 
 }

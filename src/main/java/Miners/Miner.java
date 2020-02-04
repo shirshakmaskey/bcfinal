@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import BC.Block;
 import BC.Encryption;
+import Utils.Utils;
 import Vanet.AccidentVerify;
 
 public class Miner extends Thread {
@@ -40,10 +41,12 @@ public class Miner extends Thread {
         for (int i = 0; i < hash.length(); i++) {
             if (hash.charAt(i) == '0') {
                 count++;
+                //System.out.println("hash at char: "+hash.charAt(i)+" count: "+count);
             } else {
                 break;
             }
         }
+        //System.out.println("amount at pow: "+amount);
         result = count != amount;
 
         return result;
@@ -108,6 +111,7 @@ public class Miner extends Thread {
         // for now, we will set timer to 60s
         // if the validation is finished within 60 seconds it is displayed
         // else it only waits upto 60 seconds and displays whatever is present as validation
+        Utils.log("Miner "+this.getName()+" start time: "+System.currentTimeMillis());
         long start_t = System.currentTimeMillis();
         while (numLeading0is(difficulty, Encryption.sha256("" + nounce + prevInfo))) {
             if(System.currentTimeMillis()-start_t > 60*1000){
@@ -124,8 +128,8 @@ public class Miner extends Thread {
 
         if(claimerID == -1) claimerID = index;
         candidate = nounce;
-        System.out.println("blockchain size at miner: "+Miner.bsize);
         validation.add(AccidentVerify.verify(Miner.boi, Miner.pboi));
+        Utils.log("Miner "+this.getName()+" end time: "+System.currentTimeMillis());
 //            if (solutionClaimed) {
 //                // if someone else claims that a solution is found, verify that
 //                if (numLeading0is(difficulty, Encryption.sha256("" + candidate + prevInfo))) {
