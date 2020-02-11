@@ -10,6 +10,7 @@ public class AccidentVerify {
         if (pboi == null){
             return true;
         }
+        //use this to randomly vary the anomalous validation outcome of the grp
         int rand = (int)(Math.random()*11);
         if(rand>2){
             Utils.log("start of validation: "+System.currentTimeMillis());
@@ -43,15 +44,16 @@ public class AccidentVerify {
             lr1 = Math.toRadians(La1);lr2 = Math.toRadians(La2);
             A = Math.toRadians(La2-La1)/2; B = Math.toRadians(Lo2-Lo1)/2;
             R = 6400*1000;
-            P = Math.sqrt(Math.pow(Math.sin(Math.toRadians(A)),2)+Math.cos(Math.toRadians(lr1))*Math.cos(Math.toRadians(lr2))*Math.pow(Math.sin(Math.toRadians(B)),2));
+            P = Math.sqrt(Math.pow(Math.sin(A),2)+Math.cos(lr1)*Math.cos(lr2)*Math.pow(Math.sin(B),2));
             D = 2*R*Math.asin(P);
             //get the answer and compare it with distance
             Utils.log("validation end time "+System.currentTimeMillis());
-            //Utils.log("D: "+(int)D+" distance: "+(int)dis);
-            return (int) D == (int) dis;
+            Utils.log("D: "+(int)D+" distance: "+(int)dis);
+            return (int) D <= (int) (1.05 * dis) && (int) (0.95 * dis) <= (int) D;
         }
         else {
             int rand_new = (int)(Math.random()*2);
+            //return false;
             return rand_new == 1;
         }
 

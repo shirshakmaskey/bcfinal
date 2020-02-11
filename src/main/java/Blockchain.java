@@ -1,6 +1,7 @@
 import BC.Block;
 import BC.Transaction;
 import Miners.Miner;
+import Utils.CreateTransaction;
 import Utils.Utils;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ public class Blockchain {
     // and the block is implemented as ArrayList of transactions.
 
     public final static int NUM_BLOCKS = 20;
-    public final static int MINER_NUM = 12;
+    public final static int MINER_NUM = 3;
 
 
     public static Block createGenesisBlock() {
@@ -38,11 +39,21 @@ public class Blockchain {
         // dummy transactions list
         ArrayList<Transaction> tlist = new ArrayList<>();
         //Add multiple transaction to a transaction list.
-        tlist.add(new Transaction(-119.827539, 39.530862, 10.0f, 20f,1));
-        tlist.add(new Transaction(-119.837539, 39.540863, 7.0f, 47f,2));
-        tlist.add(new Transaction(-119.839539, 39.550863, 10.0f, 65f,3));
-        tlist.add(new Transaction(-119.869845, 39.560253, 12.0f, 120f,4));
-        tlist.add(new Transaction(-119.861845, 39.560356, 100.0f, 108f,5));
+        //vary transaction window using the timestamp value and for the distance bound method for
+        //calculating the timestamp gap for next transaction
+        ArrayList<String> dir= new ArrayList<>();
+        dir.add("NE");dir.add("E");dir.add("NE");dir.add("E");
+        CreateTransaction create = new CreateTransaction(39.865147,-84.058723,4,10f,40,dir);
+        tlist = create.createTransaction(dir.size());
+        for (Transaction t:tlist){
+            System.out.println(t.getJSON());
+        }
+        System.exit(0);
+        //tlist.add(new Transaction(-84.058723, 39.865147, 10.0f, 20f,1));
+        //tlist.add(new Transaction(-84.058773, 39.865197, 7.0f, 1430f,2));
+        //tlist.add(new Transaction(-119.839539, 39.550863, 10.0f, 2481f,3));
+        //tlist.add(new Transaction(-119.869845, 39.560253, 12.0f, 4924f,4));
+        //tlist.add(new Transaction(-119.861845, 39.560356, 100.0f, 4445f,5));
         // create genesis block and add it to the chain
         Utils.log("total Start time: "+System.currentTimeMillis());
         blockchain.add(createGenesisBlock());
@@ -83,8 +94,8 @@ public class Blockchain {
                 else false_c++;
             }
             // compares the total validation count between true amd false
+            Utils.log("True/False validation " + true_c + "/" + false_c);
             if (true_c > false_c) {
-                Utils.log("True/False validation " + true_c + "/" + false_c);
                 // this means the accident is validated
                 // so we add the block
                 blockchain.add(block);

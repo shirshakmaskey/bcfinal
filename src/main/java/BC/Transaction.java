@@ -7,20 +7,18 @@ import java.util.ArrayList;
 public class Transaction {
     protected double longitude;
     protected double latitude;
-    protected float avgSpeed;
-    protected float distance;
-    protected float deceleration;
-    protected int time;
+    protected float avgSpeed, acceleration;
+    protected double distance;
+    protected long time;
 
 
-    public Transaction(){}
-
-    public Transaction(double _long, double _lat, float _avgs, float _distance, int _time){
+    public Transaction(double _lat, double _long, float _avgs, double _distance, long _time, float _acceleration){
         this.longitude = _long;
         this.latitude = _lat;
         this.avgSpeed = _avgs;
         this.distance = _distance;
         this.time = _time;
+        this.acceleration = _acceleration;
     }
 
     public ArrayList<Double> getTransaction(){
